@@ -41,7 +41,7 @@ void conectar_wifi()
 
 
 
-char postGAS(char *dato1,float dato2,float dato3) 
+char postGAS(char *dato1, float dato2,float dato3) 
 {
   /* ---------------- URLS Y DEFINICION DE PUERTOS ------------------------*/
   String IDGAS = "AKfycbyC5EeC2GMrgbfqBfslR3o4tPxg-WATkut75z2BVBPmAwsun1E" ; 
@@ -101,7 +101,7 @@ void initServerTCP(){
 
 
 void data_received(){
- 
+  int index = 0 ; 
   WiFiClient clientes = AppInventor.available();
   String request = ""  ;
   if (clientes) {
@@ -121,14 +121,39 @@ void data_received(){
     clientes.stop();
     Serial.println("Client disconnected");
   }
-
- // Serial.println("revisar_request") ; 
+  if (request==""){
+    return ; 
+  }
+  /*Serial.println("SeparacionDatos") ; 
+  Serial.print("ayuda: ") ; Serial.println(request.substring(0,4)) ; 
+  Serial.print("ID: ") ; Serial.println(request.substring(5,7)) ; 
+  index = request.indexOf(',',8) ; // ind 1  
+  Serial.print("nombre: ") ; Serial.println(request.substring(8,index)) ; 
+ // index = index + request.substring(8,index).length() ; 
+ // request.indexOf(',',index + request.substring(8,index).length())  
+  Serial.print("telefono: ");Serial.println(request.substring(index,  request.indexOf(',',index + request.substring(8,index).length()))); 
+  index =  request.indexOf(',',index + request.substring(8,index).length()) ;//ind2 
+  Serial.print("latitud: ") ; Serial.println(request.substring(index+1, request.indexOf(',',index))); 
+ */
+ Serial.println("SeparacionDatos") ; 
+ Serial.print("ayuda: ") ; Serial.println(request.substring(0,4)) ; 
+ Serial.print("ID: ") ; Serial.println(request.substring(5,7)) ; 
+ index = request.indexOf(',',8) ; // ind 1  
+ Serial.print("nombre: ") ; Serial.println(request.substring(8,index)) ; 
+ Serial.print("telefono: ") ; Serial.println(request.substring(index+1,request.indexOf(',',index+1)) ) ; 
+ index = request.indexOf(',',index+1); 
+ Serial.print("latitud: ") ; Serial.println(request.substring(index+1,request.indexOf(',',index+1))) ; 
+ index = request.indexOf(',',index+1); 
+ Serial.print("longitud: ") ; Serial.println(request.substring(index+1)) ;  
+ 
+   
+ /*
   if (request == "help\n"){
       //Serial.println("publicar") ; 
       publicar(request.c_str()) ; //publica 
   } 
   
-      
+*/       
 }
 
 
