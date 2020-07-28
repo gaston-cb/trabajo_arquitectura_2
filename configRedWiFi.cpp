@@ -124,20 +124,13 @@ void data_received(){
   if (request==""){
     return ; 
   }
-  /*Serial.println("SeparacionDatos") ; 
-  Serial.print("ayuda: ") ; Serial.println(request.substring(0,4)) ; 
-  Serial.print("ID: ") ; Serial.println(request.substring(5,7)) ; 
-  index = request.indexOf(',',8) ; // ind 1  
-  Serial.print("nombre: ") ; Serial.println(request.substring(8,index)) ; 
- // index = index + request.substring(8,index).length() ; 
- // request.indexOf(',',index + request.substring(8,index).length())  
-  Serial.print("telefono: ");Serial.println(request.substring(index,  request.indexOf(',',index + request.substring(8,index).length()))); 
-  index =  request.indexOf(',',index + request.substring(8,index).length()) ;//ind2 
-  Serial.print("latitud: ") ; Serial.println(request.substring(index+1, request.indexOf(',',index))); 
- */
+ char help [5]  ; 
+ char id[3] ; 
+ (request.substring(0,4)).toCharArray(help,5) ;
+ (request.substring(5,7)).toCharArray(id,3) ; 
  Serial.println("SeparacionDatos") ; 
- Serial.print("ayuda: ") ; Serial.println(request.substring(0,4)) ; 
- Serial.print("ID: ") ; Serial.println(request.substring(5,7)) ; 
+ Serial.print("ayuda: ") ; Serial.println(help) ; 
+ Serial.print("ID: ") ; Serial.println(id) ; 
  index = request.indexOf(',',8) ; // ind 1  
  Serial.print("nombre: ") ; Serial.println(request.substring(8,index)) ; 
  Serial.print("telefono: ") ; Serial.println(request.substring(index+1,request.indexOf(',',index+1)) ) ; 
