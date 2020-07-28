@@ -41,25 +41,24 @@ void conectar_wifi()
 
 
 
-char postGAS(char *dato1, float dato2,float dato3) 
+char postGAS(char *dato1, float latitud,float longitud) 
 {
   /* ---------------- URLS Y DEFINICION DE PUERTOS ------------------------*/
+  static char cant_veces = 0 ;
+  
   String IDGAS = "AKfycbyC5EeC2GMrgbfqBfslR3o4tPxg-WATkut75z2BVBPmAwsun1E" ; 
   char* host = "script.google.com" ; 
   int httpsPort = HTTPS_PORT ; 
   char *fingerprint = FINGERPRINT ; 
-  String payload_base =  "{\"command\": \"appendRow\", \
-                    \"sheet_name\": \"Sheet1\", \
-                    \"values\": ";
-  
-  //"{\"data\":\"hola mundo\",\"coordinates\":[{\"latitud\":-54.0886256,\"long\":-34.25685258}]}";
+ 
+
   
   String payload = ""  ; 
   String url = String("/macros/s/") +IDGAS + "/exec" ; 
-//   
+  
   
   HTTPSRedirect* client = new HTTPSRedirect(HTTPS_PORT);
-  client->setInsecure();
+  client->setInsecure() ; 
   client->setPrintResponseBody(true);
   client->setContentTypeHeader("application/json");
  
@@ -67,6 +66,7 @@ char postGAS(char *dato1, float dato2,float dato3)
   bool flag = false;
   for (int i=0; i<5; i++){
     int retval = client->connect(host, httpsPort);
+    delay(50) ; 
     Serial.print("i=") ; Serial.println(i) ; 
     if (retval == 1) {
        flag = true;
@@ -79,7 +79,9 @@ char postGAS(char *dato1, float dato2,float dato3)
     }
   
   Serial.println("init_post") ; 
-  payload = "{\"data\":\"hola mundo\",\"coordinates\":[{\"latitud\":-54.0886256,\"long\":-34.25685258}]}" ; 
+ // payload = "{\"data\":\"hola mundo\",\"coordinates\":[{\"latitud\":-54.0886256,\"long\":-34.25685258}]}" ; 
+  //sprintf()
+  payload = "{\"data\":\""+ String(dato1) +"\",\"coordinates\":[{\"latitud\":"+String(latitud,5)+",\"long\":"+String(longitud,5)+"}]}" ; 
   Serial.print("payload:  ") ; Serial.println(payload) ; 
   
   client->POST(url,host,payload,true) ;
@@ -87,6 +89,7 @@ char postGAS(char *dato1, float dato2,float dato3)
   String bodyPost = client->_myResponse.body;
   Serial.println("respuestapost: " + bodyPost) ; 
   Serial.println("fin_setup") ;   
+  delete client; 
   return 'o' ;  
 }
 
@@ -142,9 +145,18 @@ void data_received(){
  index = request.indexOf(',',index+1); 
  longitud = (request.substring(index+1)).toFloat() ; 
 
- /* -----------------Final de separacion de datos datos recibidos desde app inventor por TCP/IP - PUERTO:2000 --------------------------- */
+ /* ------------------Final de separacion de datos datos recibidos desde app inventor por TCP/IP - PUERTO:2000 --------------------------- */
+    if (postGAS(id,latitud,longitud)=='o')
+    {
+      Serial.println("envio al gas correcto") ;   
+      
+    } ; 
   
- 
+ /*-------------------Envio al Google Apps Script ------------------------------------------------------------------------------------------ */
+
+
+  
+ /*-------------------Fin envio google apps script-------------------------------------------------------------------------------------------*/
    
  /*
   if (request == "help\n"){

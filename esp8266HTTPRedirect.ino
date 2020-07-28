@@ -20,7 +20,9 @@ void setup()
   pinMode(14,INPUT_PULLUP ) ;
   //digitalWrite(LED_BUILTIN,LOW) ;
   conectar_wifi() ; 
-  Serial.println(postGAS("hola_mundo",-58.2589,-34.25686)) ;   
+  float l1 = -58.25895236 ; 
+  float l2 =  -34.2568658 ; 
+  Serial.println(postGAS("hola_mundo",l1,l2)) ;   
   initMQTT() ;   
   initServerTCP() ; 
  
