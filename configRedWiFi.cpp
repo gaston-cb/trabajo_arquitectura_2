@@ -124,20 +124,26 @@ void data_received(){
   if (request==""){
     return ; 
   }
+ 
+ /* -----------------Separacion de datos recibidos desde app inventor por TCP/IP - PUERTO:2000 --------------------------- */
  char help [5]  ; 
  char id[3] ; 
+ char nombre [10] ;
+ char telefono[10] ;  
+ float latitud ; 
+ float longitud ; 
  (request.substring(0,4)).toCharArray(help,5) ;
  (request.substring(5,7)).toCharArray(id,3) ; 
- Serial.println("SeparacionDatos") ; 
- Serial.print("ayuda: ") ; Serial.println(help) ; 
- Serial.print("ID: ") ; Serial.println(id) ; 
  index = request.indexOf(',',8) ; // ind 1  
- Serial.print("nombre: ") ; Serial.println(request.substring(8,index)) ; 
- Serial.print("telefono: ") ; Serial.println(request.substring(index+1,request.indexOf(',',index+1)) ) ; 
+ (request.substring(8,index)).toCharArray(nombre,10) ; 
+ (request.substring(index+1,request.indexOf(',',index+1))).toCharArray(telefono,10) ; 
  index = request.indexOf(',',index+1); 
- Serial.print("latitud: ") ; Serial.println(request.substring(index+1,request.indexOf(',',index+1))) ; 
+ latitud = (request.substring(index+1,request.indexOf(',',index+1))).toFloat(); 
  index = request.indexOf(',',index+1); 
- Serial.print("longitud: ") ; Serial.println(request.substring(index+1)) ;  
+ longitud = (request.substring(index+1)).toFloat() ; 
+
+ /* -----------------Final de separacion de datos datos recibidos desde app inventor por TCP/IP - PUERTO:2000 --------------------------- */
+  
  
    
  /*
