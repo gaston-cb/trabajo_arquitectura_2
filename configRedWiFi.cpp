@@ -47,7 +47,6 @@ void conectar_wifi()
 
 char postGAS(char *idVol, float latitud,float longitud,char *PR) 
 {
-  beebotte.disconnect() ; Serial.flush() ; 
   /* ---------------- URLS Y DEFINICION DE PUERTOS ------------------------*/
   String IDGAS = "AKfycbyC5EeC2GMrgbfqBfslR3o4tPxg-WATkut75z2BVBPmAwsun1E" ; 
   char* host = "script.google.com" ; 
@@ -55,7 +54,7 @@ char postGAS(char *idVol, float latitud,float longitud,char *PR)
   char *fingerprint = FINGERPRINT ;   
   String payload = ""  ; 
   String url = String("/macros/s/") +IDGAS + "/exec" ; 
-  // HTTPSRedirect* client = nullptr ; 
+ 
   HTTPSRedirect*client = new HTTPSRedirect(httpsPort); 
   client->setInsecure() ;  
   client->setPrintResponseBody(true);
@@ -76,16 +75,14 @@ char postGAS(char *idVol, float latitud,float longitud,char *PR)
   }  
  
   payload = "{\"ID\":\""+ String(idVol) +"\",\"coordinates\":[{\"latitud\":"+String(latitud,6)+",\"long\":"+String(longitud,6)+"}],\"PR\":\""+String(PR)+"\"}" ; 
-  //yield() ; 
-  Serial.flush() ; 
   client->POST(url,host,payload,true) ;  
   String bodyPost = client->_myResponse.body;
   Serial.println("respuestapost: " + bodyPost) ; 
   Serial.println("fin_setup") ;    
- // client = nullptr ; 
+
   delete client; 
   return 'o' ; 
-  initMQTT() ;  
+  //initMQTT() ;  
 }
 
 
@@ -148,6 +145,8 @@ void data_received(){
  
 
  /* ------------------Final de separacion de datos datos recibidos desde app inventor por TCP/IP - PUERTO:2000 --------------------------- */
+  
+ /*-------------------Envio al Google Apps Script ------------------------------------------------------------------------------------------ */
     delay(10) ; 
     if (postGAS(id,latitud,longitud,nombre_pr)=='o')
     {
@@ -155,8 +154,6 @@ void data_received(){
       
     } ; 
   
- /*-------------------Envio al Google Apps Script ------------------------------------------------------------------------------------------ */
-
 
   
  /*-------------------Fin envio google apps script-------------------------------------------------------------------------------------------*/
