@@ -9,12 +9,11 @@
 
 
 extern PubSubClient beebotte  ;
-extern WiFiServer AppInventor ; 
+//extern WiFiServer AppInventor ; 
 
 void setup()
 {
  // wdt_disabled() ; 
-  
   Serial.begin(115200) ;   
  
   pinMode(14,INPUT_PULLUP ) ;
@@ -22,7 +21,7 @@ void setup()
   conectar_wifi() ; 
   float l1 = -58.25895236 ; 
   float l2 =  -34.2568658 ; 
-  Serial.println(postGAS("hola_mundo",l1,l2)) ;   
+  //Serial.println(postGAS("hola_mundo",l1,l2)) ;   
   initMQTT() ;   
   initServerTCP() ; 
  
@@ -43,12 +42,10 @@ void loop() {
   }else 
   { 
     
-    delay(50) ;
+    delay(10) ;
     beebotte.loop() ;
   }
+  delay(10) ; 
   data_received() ; 
-  /*if (digitalRead(14)==LOW){
-      char *data = "2586,32558,658" ; 
-      publicar(data) ; 
-  }*/
+  Serial.flush() ; 
 }

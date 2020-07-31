@@ -41,10 +41,9 @@ bool HTTPSRedirect::printRedir(void){
 
   // Clear the input stream of any junk data before making the request
   
-  while(available()){
-    Serial.print(read()) ; 
-  }
-  Serial.println() ; 
+  while(available())
+    read() ; 
+  
   // Create HTTP/1.1 compliant request string
   // HTTP/1.1 complaint request packet must exist
   
@@ -53,7 +52,8 @@ bool HTTPSRedirect::printRedir(void){
   // Make the actual HTTPS request using the method 
   // print() from the WifiClientSecure class
   // Make sure the input stream is cleared (as above) before making the call
-  print(_Request);
+   
+    print(_Request);
   
   // Read HTTP Response Status lines
   while (connected()) {
@@ -67,7 +67,7 @@ bool HTTPSRedirect::printRedir(void){
       case 200:
       case 201:
         {
-          Serial.println("dentro de 200-201");
+         
           // final header is discarded
           fetchHeader();
           
@@ -89,7 +89,7 @@ bool HTTPSRedirect::printRedir(void){
         {
           // Get re-direction URL from the 'Location' field in the header
           if (getLocationURL()){
-            //stop(); // may not be required
+             //stop(); // may not be required
 
             _myResponse.redirected = true;
             
@@ -155,7 +155,7 @@ void HTTPSRedirect::createPostRequest(const String& url, const char* host, const
                           payload + 
                           "\r\n\r\n";
 
-  Serial.print("requestHeader: ") ; Serial.println(_Request) ; 
+
   return;
 }
 
@@ -385,7 +385,7 @@ bool HTTPSRedirect::POST(const String& url, const char* host, const String& payl
 }
 
 bool HTTPSRedirect::POST(const String& url, const char* host, const String& payload, const bool& disp){
-  Serial.println("dentroDePost") ; 
+ 
   bool retval;
   bool oldval;
 
@@ -413,7 +413,7 @@ bool HTTPSRedirect::POST(const String& url, const char* host, const String& payl
 
 void HTTPSRedirect::InitResponse(void){
   // Init response data
-  Serial.println("dentro_de_init_response");
+  
   _myResponse.body = "";
   _myResponse.statusCode = 0;
   _myResponse.reasonPhrase = "";
