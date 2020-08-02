@@ -14,17 +14,13 @@ extern PubSubClient beebotte  ;
 void setup()
 {
  // wdt_disabled() ; 
-  Serial.begin(115200) ;   
- 
+  Serial.begin(115200) ;    
   pinMode(14,INPUT_PULLUP ) ;
   //digitalWrite(LED_BUILTIN,LOW) ;
   conectar_wifi() ; 
-  float l1 = -58.25895236 ; 
-  float l2 =  -34.2568658 ; 
-  //Serial.println(postGAS("hola_mundo",l1,l2)) ;   
   initMQTT() ;   
   initServerTCP() ; 
- 
+  //getGas() ; 
 
 
 } 

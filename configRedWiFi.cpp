@@ -109,8 +109,7 @@ void data_received(){
       Serial.print("request:") ; Serial.print(request) ; 
       if(request!="")
       { 
-        clientes.println("mensaje recibido") ;
-          
+        clientes.println("mensaje recibido") ;          
       }
       Serial.println("clientes_availables") ;
       clientes.flush() ;
@@ -191,6 +190,44 @@ void data_received(){
  
 }
 
+
+char getGas()
+{
+  String IDGAS = "AKfycbyC5EeC2GMrgbfqBfslR3o4tPxg-WATkut75z2BVBPmAwsun1E" ; 
+  char* host = "script.google.com" ; 
+  int httpsPort = HTTPS_PORT ; 
+  char *fingerprint = FINGERPRINT ;   
+  String payload = ""  ; 
+  String url = String("/macros/s/") +IDGAS + "/exec?user=esp8266" ; 
+ 
+  HTTPSRedirect*client = new HTTPSRedirect(httpsPort); 
+  client->setInsecure() ;  
+  client->setPrintResponseBody(true);
+  client->setContentTypeHeader("application/json");
+ // conexion -- espera 5 veces 
+  bool flag = false;
+  for (int i=0; i<5; i++){
+    int retval = client->connect(host, httpsPort);
+    
+    if (retval == 1) {
+       Serial.println("conectado a GAS") ; 
+       flag = true;
+       break;
+    }
+  }
+  if (!flag){
+      return 'n' ;    
+  } 
+  client->GET(url,host) ;  
+  String bodyPost = client->_myResponse.body;
+  Serial.println("respuestapost: " + bodyPost) ; 
+  Serial.println("fin_setup") ;    
+
+  delete client; 
+  return 'o' ; 
+
+  
+}
 
 
 
