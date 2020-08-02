@@ -9,7 +9,14 @@
 unsigned char pedido_ayuda = 0 ; 
 WiFiServer AppInventor(PORT_TCP)  ; 
 extern PubSubClient beebotte  ;
-//extern PubSubClient beebotte  ;
+
+char* nombre_vol[10] ; 
+char* tel[10] ; 
+char* idvol[3]; 
+
+
+
+
 
 void conectar_wifi() 
 {
@@ -62,8 +69,7 @@ char postGAS(char *idVol, float latitud,float longitud,char *PR)
  // conexion -- espera 5 veces 
   bool flag = false;
   for (int i=0; i<5; i++){
-    int retval = client->connect(host, httpsPort);
-    
+    int retval = client->connect(host, httpsPort);    
     if (retval == 1) {
        Serial.println("conectado a GAS") ; 
        flag = true;
@@ -100,7 +106,8 @@ void data_received(){
   WiFiClient clientes = AppInventor.available();
   String request = ""  ;
   
-  if (clientes) {
+  if (clientes) 
+  {
     while (clientes.connected()) {
       Serial.println("clientes_connected") ; 
       while (clientes.available()>0) {        
@@ -108,9 +115,13 @@ void data_received(){
       }      
       Serial.print("request:") ; Serial.print(request) ; 
       if(request!="")
-      { 
-        clientes.println("mensaje recibido") ;          
+      {
+        if (pedido_ayuda==3){ 
+            clientes.println("voluntarioencasa") ;          
+        } 
+        clientes.println("mensaje recibido") ; 
       }
+      
       Serial.println("clientes_availables") ;
       clientes.flush() ;
       delay(10);    
@@ -121,13 +132,14 @@ void data_received(){
     {
       Serial.println("el usuario pidio ayuda") ; 
       pedido_ayuda = 0 ; 
-    }else 
+    }else if (request.substring(0,4)=="\n\n--") 
     {
       Serial.println("datos a enviar a beebote") ; 
       pedido_ayuda = 1 ;   
     } 
   }
-  if (request==""){
+  if (request=="")
+  {
     return ; 
   }
  
@@ -185,6 +197,7 @@ void data_received(){
   }else if (pedido_ayuda==3)
   {
     Serial.println("voluntario en lugar - salir de emergencia del dispositivo - ") ; 
+    pedido_ayuda = 0 ; 
   }
 
  

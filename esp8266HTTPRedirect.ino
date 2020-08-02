@@ -7,6 +7,8 @@
 #include "datosWeb.h"
 #include "mqtt_beebotte.h"
 
+char datos_voluntario = 0 ; 
+
 
 extern PubSubClient beebotte  ;
 //extern WiFiServer AppInventor ; 
@@ -15,8 +17,10 @@ void setup()
 {
  // wdt_disabled() ; 
   Serial.begin(115200) ;    
-  pinMode(14,INPUT_PULLUP ) ;
-  //digitalWrite(LED_BUILTIN,LOW) ;
+  //pinMode(14,INPUT_PULLUP ) ;
+  pinMode(LED_BUILTIN, OUTPUT);
+  delay(1000)  ;  
+  digitalWrite(LED_BUILTIN,HIGH) ;
   conectar_wifi() ; 
   initMQTT() ;   
   initServerTCP() ; 
@@ -44,4 +48,10 @@ void loop() {
   delay(10) ; 
   data_received() ; 
   Serial.flush() ; 
+  if (datos_voluntario==1)
+  {
+     datos_voluntario = 0 ; 
+     while (getGas()!='o'){} ; 
+  }
+
 }

@@ -6,7 +6,8 @@
 
 WiFiClient espClient;
 PubSubClient beebotte(espClient); // PROTOCOLO mqtt 
-extern unsigned char pedido_ayuda  ; 
+extern char datos_voluntario; 
+extern unsigned char pedido_ayuda ; 
 
 
 void onMessage(char* topic, byte* payload, unsigned int length) {
@@ -37,17 +38,20 @@ void onMessage(char* topic, byte* payload, unsigned int length) {
     Serial.print(data);
     if (strcmp(data,"help")==0)
     {
-      pedido_ayuda = 1 ; 
+     // pedido_ayuda = 1 ; 
       Serial.println("pedido_ayuda_activado") ; 
-      pinMode(LED_BUILTIN,LOW);
+     digitalWrite(LED_BUILTIN,LOW) ; 
+      
     }else if (strcmp(data,"voluntario_disponible")==0)
     {
-      Serial.println("hay un voluntario disponible") ; 
-      pedido_ayuda = 2 ; 
+      Serial.println("hay un voluntario disponible") ;
+      datos_voluntario = 1 ;  
+      digitalWrite(LED_BUILTIN,LOW) ; 
     }else if (strcmp(data,"vol_casaPR")==0)
     {
       Serial.println("la puerca esta en la pocilga ") ; 
       pedido_ayuda = 3 ; 
+       digitalWrite(LED_BUILTIN, HIGH); 
     }
   }else if(strcmp(topic,"TestESP8266/presion_diastolica")==0)
   {
