@@ -10,9 +10,13 @@ PubSubClient beebotte(espClient); // PROTOCOLO mqtt
 
 
 void onMessage(char* topic, byte* payload, unsigned int length) {
-  // decode the JSON payload
-  //const size_t CAPACITY = JSON_ARRAY_SIZE(2);
- // char *data ; 
+  /* Beebotte resources 
+   * Resources:  mqtt8266 -- general 
+   *             presion_diastolica
+   *             presion_sistolica
+   *             temperatura 
+   *             pulso 
+  */
   StaticJsonDocument<128> jsonInBuffer; 
   DeserializationError err = deserializeJson(jsonInBuffer,payload) ; 
   // Test if parsing succeeds.
@@ -20,25 +24,42 @@ void onMessage(char* topic, byte* payload, unsigned int length) {
     Serial.println("parseObject() failed");
     return;
   }
-
-  // led resource is a boolean read it accordingly
-  const char *data  = jsonInBuffer["data"];
-  const String Comp = data ; 
-  // Set the led pin to high or low
   
-
-  // Print the received value to serial monitor for debugging
   Serial.print("Received message of length ");
   Serial.print(length);
   Serial.println();
   Serial.print("data ");
-  Serial.print(data);
-  Serial.println();
-  Serial.println(Comp + ", " + "ayuda") ; 
-  if (Comp=="ayuda"){
-      Serial.println("dentro de comp")  ;     
-      digitalWrite(LED_BUILTIN,LOW) ;
+  // reviso segun el topic suscrito ; 
+  if (strcmp(topic,"TestESP8266/mqtt8266")==0)
+  {
+    const char *data  = jsonInBuffer["data"]; 
+    String comp = data ; 
+    Serial.print(data);
+    if (strcmp(data,"help")==0)
+    {
+      Serial.println("pedido_ayuda_activado") ; 
+      pinMode(LED_BUILTIN,LOW);
     }
+  }else if(strcmp(topic,"TestESP8266/presion_diastolica")==0)
+  {
+    //const int *data  = jsonInBuffer["data"]; 
+    int presion = jsonInBuffer["data"];
+    Serial.println(presion);
+  
+  }else if(strcmp(topic,"TestESP8266/presion_sistolica")==0)
+  {
+    int presion = jsonInBuffer["data"];
+    Serial.println(presion);
+  }else if (strcmp(topic,"TestESP8266/temperatura")==0)
+  {
+    int presion = jsonInBuffer["data"];
+    Serial.println(presion);
+  }else if (strcmp(topic,"TestESP8266/pulso")==0)
+  {
+    int presion = jsonInBuffer["data"];
+    Serial.println(presion);
+  }
+  
 }
 
 
@@ -64,41 +85,93 @@ const char * generateID()
 
 
 boolean reconnect() {
-  if (beebotte.connect(generateID(), TOKEN, "")) {
-    char topic[64];
-    sprintf(topic, "%s/%s", CHANNEL, RESOURCE);
-    beebotte.subscribe(topic);
-    Serial.println("Connected to Beebotte MQTT");
-    Serial.print("olalalalal") ; 
+  /* Beebotte resources 
+   * Resources:  mqtt8266 -- general 
+   *             presion_diastolica
+   *             presion_sistolica
+   *             temperatura 
+   *             pulso 
+  */
+  if (beebotte.connect(generateID(), TOKEN, "")) 
+  {
+      char topic[64];
+      sprintf(topic, "%s/%s", CHANNEL, RESOURCE);
+      beebotte.subscribe(topic);
+       
+      sprintf(topic, "%s/%s", CHANNEL,"presion_diastolica" );
+      beebotte.subscribe(topic);
+      sprintf(topic, "%s/%s", CHANNEL,"presion_sistolica" );
+      beebotte.subscribe(topic);
+      sprintf(topic, "%s/%s", CHANNEL,"temperatura" );
+      beebotte.subscribe(topic);
+      sprintf(topic, "%s/%s", CHANNEL,"pulso" );
+      beebotte.subscribe(topic);
+      
+      Serial.println("Connected to Beebotte MQTT");
+   
   }
   return beebotte.connected();
 }
 
 
 
-void publicar(const char* datos){
-  //const int tam = JSON_OBJECT_SIZE(2) +100 ; 
+void publicar(const char* datos,const char *resource,int number )
+{
+   /* Beebotte resources 
+   * Resources:  mqtt8266 -- general 
+   *             presion_diastolica
+   *             presion_sistolica
+   *             temperatura 
+   *             pulso 
+  */
+ 
   StaticJsonDocument<128> mqtt_bebbotte; 
    
-  mqtt_bebbotte["Resource"] = "mqtt8266" ;   
-  mqtt_bebbotte["data"] = datos ; 
+  mqtt_bebbotte["Resource"] = resource ;   
+  //mqtt_bebbotte["data"] = datos ; 
   mqtt_bebbotte["write"] = true ; 
+  if (number == 0 )
+  {
+    mqtt_bebbotte["data"] = datos ;
+  }else
+  {
+    mqtt_bebbotte["data"] = number ; 
+  }
+  
   serializeJson(mqtt_bebbotte,Serial) ; 
-  char buffer[128] ; 
+  char buffer[128] ;   
   serializeJson(mqtt_bebbotte,buffer) ; 
   char topic[40] ; 
-  sprintf(topic,"%s/%s",CHANNEL,RESOURCE) ; 
+  sprintf(topic,"%s/%s",CHANNEL,resource) ; 
   beebotte.publish(topic,buffer) ;  
 }
 
 
 void initMQTT() {
+  /* Beebotte resources 
+   * Resources:  mqtt8266 -- general 
+   *             presion_diastolica
+   *             presion_sistolica
+   *             temperatura 
+   *             pulso 
+  */
+  
   beebotte.setServer(BBT, 1883);  
   beebotte.setCallback(onMessage);  
   if (beebotte.connect(generateID(), TOKEN, "")) {
     char topic[64];
     sprintf(topic, "%s/%s", CHANNEL, RESOURCE);
     beebotte.subscribe(topic);
+    sprintf(topic, "%s/%s", CHANNEL,"presion_diastolica" );
+    beebotte.subscribe(topic);
+    sprintf(topic, "%s/%s", CHANNEL,"presion_sistolica" );
+    beebotte.subscribe(topic);
+    sprintf(topic, "%s/%s", CHANNEL,"temperatura" );
+    beebotte.subscribe(topic);
+    sprintf(topic, "%s/%s", CHANNEL,"pulso" );
+    beebotte.subscribe(topic);
+    
+    
     Serial.println("Connected to Beebotte MQTT");
   }
 
