@@ -49,7 +49,7 @@ void onMessage(char* topic, byte* payload, unsigned int length) {
       digitalWrite(LED_BUILTIN,LOW) ; 
     }else if (strcmp(data,"vol_casaPR")==0)
     {
-      Serial.println("la puerca esta en la pocilga ") ; 
+      Serial.println("El voluntario se encuentra en el domicilio") ; 
       pedido_ayuda = 3 ; 
        digitalWrite(LED_BUILTIN, HIGH); 
     }

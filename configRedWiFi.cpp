@@ -9,10 +9,10 @@
 unsigned char pedido_ayuda = 0 ; 
 WiFiServer AppInventor(PORT_TCP)  ; 
 extern PubSubClient beebotte  ;
-
-char* nombre_vol[10] ; 
-char* tel[10] ; 
-char* idvol[3]; 
+extern char datos_voluntario ; 
+char nombre_vol[20]  ; 
+char tel[13]    ;
+char idvol[3] ;  
 
 
 
@@ -20,6 +20,7 @@ char* idvol[3];
 
 void conectar_wifi() 
 {
+  
   IPAddress ip(192, 168, 0, 150);
   IPAddress gateway(192, 168, 0, 1);
   IPAddress subnet(255, 255, 255, 0);
@@ -43,7 +44,7 @@ void conectar_wifi()
   Serial.println(WiFi.SSID());
   Serial.print("IP address:\t");
   Serial.println(WiFi.localIP());
-   
+  //Serial.print("s1:") ; Serial.println(s1) ;  
   
 } 
 
@@ -118,8 +119,10 @@ void data_received(){
       {
         if (pedido_ayuda==3){ 
             clientes.println("voluntarioencasa") ;          
-        } 
-        clientes.println("mensaje recibido") ; 
+        }else if (datos_voluntario == 3){
+            datos_voluntario = 0 ;
+            clientes.println("voluntariodisponible") ;
+        }else {clientes.println("mensaje recibido") ;} 
       }
       
       Serial.println("clientes_availables") ;
@@ -212,7 +215,7 @@ char getGas()
   char *fingerprint = FINGERPRINT ;   
   String payload = ""  ; 
   String url = String("/macros/s/") +IDGAS + "/exec?user=esp8266" ; 
- 
+  int index = 0 ; 
   HTTPSRedirect*client = new HTTPSRedirect(httpsPort); 
   client->setInsecure() ;  
   client->setPrintResponseBody(true);
@@ -232,8 +235,14 @@ char getGas()
       return 'n' ;    
   } 
   client->GET(url,host) ;  
-  String bodyPost = client->_myResponse.body;
-  Serial.println("respuestapost: " + bodyPost) ; 
+  String bodyget = client->_myResponse.body;
+  // parsear nombre,dato,idvol 
+  index = bodyget.indexOf(',') ; 
+  (bodyget.substring(0,index)).toCharArray(nombre_vol,20) ;   
+  bodyget.substring(index+1 ,bodyget.indexOf(',',index+1)).toCharArray(tel,13) ;   
+  index =  bodyget.indexOf(',',index+1) ;  
+  bodyget.substring(index+1).toCharArray(idvol,3); 
+  Serial.println("respuestapost: " + bodyget) ; 
   Serial.println("fin_setup") ;    
 
   delete client; 

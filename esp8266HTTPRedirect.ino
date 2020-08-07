@@ -1,5 +1,7 @@
+#include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
+#include "Server.hpp" 
 #include <ArduinoJson.h>
 #include "HTTPSRedirect.h"
 #include "DebugMacros.h"
@@ -8,7 +10,7 @@
 #include "mqtt_beebotte.h"
 
 char datos_voluntario = 0 ; 
-
+ 
 
 extern PubSubClient beebotte  ;
 //extern WiFiServer AppInventor ; 
@@ -19,13 +21,12 @@ void setup()
   Serial.begin(115200) ;    
   //pinMode(14,INPUT_PULLUP ) ;
   pinMode(LED_BUILTIN, OUTPUT);
-  delay(1000)  ;  
   digitalWrite(LED_BUILTIN,HIGH) ;
   conectar_wifi() ; 
   initMQTT() ;   
   initServerTCP() ; 
-  //getGas() ; 
-
+  InitServer(); 
+   
 
 } 
 void loop() {
@@ -50,8 +51,8 @@ void loop() {
   Serial.flush() ; 
   if (datos_voluntario==1)
   {
-     datos_voluntario = 0 ; 
+     datos_voluntario = 3 ; 
      while (getGas()!='o'){} ; 
   }
-
+   server.handleClient(); 
 }
