@@ -125,7 +125,7 @@ void data_received(){
         {
           datos_voluntario = 0 ;
           clientes.println("voluntariodisponible") ;
-        }else if (request =="dataDiario")
+        }else if (request.startsWith("dataDiario") ==true)
         {
           pedido_ayuda = 4 ; 
           clientes.println("datos_diarios") ;
@@ -210,14 +210,19 @@ void data_received(){
     float temp ; 
     int pulso ; 
     int index = 0 ; 
-    index = request.indexOf(',') ; 
+    index = request.indexOf(':') ; 
     
-    pres_sist =(request.substring(0,index)).toInt() ; 
+    pres_sist =(request.substring(index,request.indexOf(',',index+1))).toInt() ; 
+   // index = request.substring(',',index+1) 
     pres_dias =(request.substring(index+1,request.indexOf(',',index+1))).toInt() ;
     index = request.indexOf(',',index+1) ; 
     pulso = request.substring(index,request.indexOf(',',index+1)).toInt() ; 
     index = request.indexOf(',',index+1); ; 
     temp  = request.substring(index,request.indexOf(',',index+1)).toInt() ;     
+    Serial.print("sist: ") ; Serial.println(pres_sist) ; 
+    Serial.print("diast: ") ; Serial.println(pres_dias) ; 
+    Serial.print("sist: ") ; Serial.println(pulso) ; 
+    Serial.print("temp: ") ; Serial.println(temp,5) ;  
          
     pedido_ayuda=0 ; 
     //publicar datos diarios -- 
