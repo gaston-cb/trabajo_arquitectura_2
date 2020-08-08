@@ -207,18 +207,19 @@ void data_received(){
     //sistolica - diastolica - pulso - temp 
     int pres_dias ; 
     int pres_sist; 
-    float temp ; 
+    int temp ; 
     int pulso ; 
     int index = 0 ; 
     index = request.indexOf(':') ; 
     
-    pres_sist =(request.substring(index,request.indexOf(',',index+1))).toInt() ; 
-   // index = request.substring(',',index+1) 
+    pres_sist =(request.substring(index+1,request.indexOf(',',index+1))).toInt() ; 
+    index = request.indexOf(',',index+1) ;
     pres_dias =(request.substring(index+1,request.indexOf(',',index+1))).toInt() ;
     index = request.indexOf(',',index+1) ; 
-    pulso = request.substring(index,request.indexOf(',',index+1)).toInt() ; 
+    
+    pulso = request.substring(index+1,request.indexOf(',',index+1)).toInt() ; 
     index = request.indexOf(',',index+1); ; 
-    temp  = request.substring(index,request.indexOf(',',index+1)).toInt() ;     
+    temp  = request.substring(index+1).toInt() ;     
     Serial.print("sist: ") ; Serial.println(pres_sist) ; 
     Serial.print("diast: ") ; Serial.println(pres_dias) ; 
     Serial.print("sist: ") ; Serial.println(pulso) ; 
@@ -229,7 +230,7 @@ void data_received(){
     publicar("help","pulso_diario",pulso) ;
     publicar("help","presion_sist_diaria",pres_sist) ;
     publicar("help","presion_diast_diaria",pres_dias) ;    
-    publicar("help","temperatura_diaria",temp) ;
+    publicar("help","temperatura_diaria_1",temp) ;
   }
 
  

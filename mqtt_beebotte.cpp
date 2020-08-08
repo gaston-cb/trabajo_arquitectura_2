@@ -129,7 +129,7 @@ boolean reconnect() {
 
 
 
-void publicar(const char* datos,const char *resource,int number )
+void publicar(const char* datos,const char *resource,int number)
 {
    /* Beebotte resources 
    * Resources:  mqtt8266 -- general 
