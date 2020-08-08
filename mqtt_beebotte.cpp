@@ -38,19 +38,20 @@ void onMessage(char* topic, byte* payload, unsigned int length) {
     Serial.print(data);
     if (strcmp(data,"help")==0)
     {
-     // pedido_ayuda = 1 ; 
+      pedido_ayuda = 1 ; 
       Serial.println("pedido_ayuda_activado") ; 
      digitalWrite(LED_BUILTIN,LOW) ; 
       
     }else if (strcmp(data,"voluntario_disponible")==0)
     {
+      pedidos_ayuda = 1 ; 
       Serial.println("hay un voluntario disponible") ;
       datos_voluntario = 1 ;  
       digitalWrite(LED_BUILTIN,LOW) ; 
     }else if (strcmp(data,"vol_casaPR")==0)
     {
-      Serial.println("El voluntario se encuentra en el domicilio") ; 
-      pedido_ayuda = 3 ; 
+       Serial.println("El voluntario se encuentra en el domicilio") ; 
+       pedido_ayuda = 3 ; 
        digitalWrite(LED_BUILTIN, HIGH); 
     }
   }else if(strcmp(topic,"TestESP8266/presion_diastolica")==0)
@@ -141,7 +142,7 @@ void publicar(const char* datos,const char *resource,int number )
   StaticJsonDocument<128> mqtt_bebbotte; 
    
   mqtt_bebbotte["Resource"] = resource ;   
-  //mqtt_bebbotte["data"] = datos ; 
+ 
   mqtt_bebbotte["write"] = true ; 
   if (number == 0 )
   {

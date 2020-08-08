@@ -111,18 +111,28 @@ void data_received(){
   {
     while (clientes.connected()) {
       Serial.println("clientes_connected") ; 
-      while (clientes.available()>0) {        
+      while (clientes.available()>0) 
+      {        
         request = clientes.readString() ;       
       }      
       Serial.print("request:") ; Serial.print(request) ; 
       if(request!="")
       {
-        if (pedido_ayuda==3){ 
+        if (pedido_ayuda==3)
+        { 
             clientes.println("voluntarioencasa") ;          
-        }else if (datos_voluntario == 3){
-            datos_voluntario = 0 ;
-            clientes.println("voluntariodisponible") ;
-        }else {clientes.println("mensaje recibido") ;} 
+        }else if (datos_voluntario == 3)
+        {
+          datos_voluntario = 0 ;
+          clientes.println("voluntariodisponible") ;
+        }else if (request =="dataDiario")
+        {
+          pedido_ayuda = 4 ; 
+          clientes.println("mensaje recibido") ;
+        }else
+        {
+          clientes.println("mensaje recibido") ;
+        }
       }
       
       Serial.println("clientes_availables") ;
@@ -131,15 +141,6 @@ void data_received(){
     }
     clientes.stop();
     Serial.println("Client disconnected");
-    if (request.substring(0,4)=="help")  
-    {
-      Serial.println("el usuario pidio ayuda") ; 
-      pedido_ayuda = 0 ; 
-    }else if (request.substring(0,4)=="\n\n--") 
-    {
-      Serial.println("datos a enviar a beebote") ; 
-      pedido_ayuda = 1 ;   
-    } 
   }
   if (request=="")
   {
@@ -201,6 +202,14 @@ void data_received(){
   {
     Serial.println("voluntario en lugar - salir de emergencia del dispositivo - ") ; 
     pedido_ayuda = 0 ; 
+  }/* else if (pedido_ayuda==4)
+  {
+    pedido_ayuda=0
+    //publicar datos diarios -- 
+   publicar("help","pulso_diario",temper) ;
+    publicar("help","presion_sist_diaria",temper) ;
+    publicar("help","presion_diast_diaria",temper) ;    
+    publicar("help","temperatura_diaria",temper) ;*/
   }
 
  
