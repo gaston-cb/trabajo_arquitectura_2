@@ -44,7 +44,7 @@ void onMessage(char* topic, byte* payload, unsigned int length) {
       
     }else if (strcmp(data,"voluntario_disponible")==0)
     {
-      pedidos_ayuda = 1 ; 
+      pedido_ayuda = 1 ; 
       Serial.println("hay un voluntario disponible") ;
       datos_voluntario = 1 ;  
       digitalWrite(LED_BUILTIN,LOW) ; 
